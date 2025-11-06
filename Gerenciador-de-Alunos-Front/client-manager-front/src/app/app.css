@@ -1,0 +1,208 @@
+/* ======================
+   VISUAL GERAL
+====================== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap');
+
+body {
+  background-color: #f4f6f9;
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+.container {
+  width: 95%;
+  max-width: 850px;
+  margin: 50px auto;
+  text-align: center;
+}
+
+/* ======================
+   TÍTULOS
+====================== */
+h1 {
+  color: #2d3436;
+  font-weight: 600;
+  font-size: 28px;
+  margin-bottom: 35px;
+}
+
+h2 {
+  color: #444;
+  font-weight: 500;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+/* ======================
+   CARDS / SEÇÕES
+====================== */
+.card {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  margin-bottom: 30px;
+  text-align: left;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* ======================
+   FORMULÁRIOS
+====================== */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+input {
+  padding: 12px 14px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  font-size: 15px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input:focus {
+  outline: none;
+  border-color: #4caf50;
+  box-shadow: 0 0 4px rgba(76, 175, 80, 0.3);
+}
+
+/* ======================
+   BOTÕES
+====================== */
+button {
+  padding: 12px;
+  background: linear-gradient(135deg, #4caf50, #43a047);
+  border: none;
+  color: white;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+button:hover {
+  background: linear-gradient(135deg, #45a049, #388e3c);
+  transform: translateY(-1px);
+}
+
+button.delete {
+  background: linear-gradient(135deg, #e53935, #c62828);
+}
+
+button.delete:hover {
+  background: linear-gradient(135deg, #d32f2f, #b71c1c);
+}
+
+/* ======================
+   ALERTAS
+====================== */
+.alert {
+  margin-bottom: 15px;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.alert-erro {
+  background-color: #fdecea;
+  color: #c62828;
+  border: 1px solid #ef5350;
+}
+
+.alert-sucesso {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border: 1px solid #66bb6a;
+}
+
+/* ======================
+   BUSCA
+====================== */
+.search-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+.search-box input {
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid #bbb;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 15px;
+}
+
+/* ======================
+   TABELA
+====================== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  padding: 12px 10px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+  font-size: 15px;
+}
+
+th {
+  color: #333;
+  font-weight: 600;
+}
+
+tr:hover {
+  background-color: #fafafa;
+}
+
+/* ======================
+   RESPONSIVIDADE
+====================== */
+@media (max-width: 700px) {
+  .container {
+    width: 95%;
+  }
+
+  table, thead, tbody, th, td, tr {
+    display: block;
+  }
+
+  tr {
+    margin-bottom: 10px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    padding: 10px;
+  }
+
+  th {
+    display: none;
+  }
+
+  td {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+  }
+
+  td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #555;
+  }
+}

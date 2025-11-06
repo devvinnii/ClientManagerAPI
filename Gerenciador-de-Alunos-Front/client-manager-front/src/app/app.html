@@ -1,0 +1,56 @@
+<div class="container">
+  <h1>Gerenciador de Clientes</h1>
+
+  <!-- MENSAGENS -->
+  <div *ngIf="mensagemErro" class="alert alert-erro">{{ mensagemErro }}</div>
+  <div *ngIf="mensagemSucesso" class="alert alert-sucesso">{{ mensagemSucesso }}</div>
+
+  <!-- SEÇÃO DE CADASTRO -->
+  <section class="card">
+    <h2>Cadastrar Cliente</h2>
+    <form (ngSubmit)="cadastrarCliente()" class="form">
+      <input type="text" placeholder="Nome" [(ngModel)]="novoCliente.name" name="name" required />
+      <input type="text" placeholder="CPF (somente números)" [(ngModel)]="novoCliente.cpf" name="cpf" required />
+      <input type="email" placeholder="Email" [(ngModel)]="novoCliente.email" name="email" required />
+      <button type="submit">Cadastrar</button>
+    </form>
+  </section>
+
+  <!-- SEÇÃO DE BUSCA -->
+  <section class="card">
+    <h2>Buscar Cliente</h2>
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="Digite o nome ou CPF"
+        [(ngModel)]="filtro"
+        (input)="filtrarClientes()"
+      />
+    </div>
+  </section>
+
+  <!-- SEÇÃO DE LISTAGEM -->
+  <section class="card">
+    <h2>Lista de Clientes</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>CPF</th>
+          <th>Email</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let cliente of clientesFiltrados">
+          <td>{{ cliente.name }}</td>
+          <td>{{ cliente.cpf }}</td>
+          <td>{{ cliente.email }}</td>
+          <td>
+            <button class="delete" (click)="deletarCliente(cliente.id)">Excluir</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+</div>
