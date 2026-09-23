@@ -115,7 +115,7 @@
             return;
         }
 
-        window.location.href = `details.html?query=${value}`;
+        window.location.href = `details.html?query=${encodeURIComponent(value)}`;
     }
 </script>
 

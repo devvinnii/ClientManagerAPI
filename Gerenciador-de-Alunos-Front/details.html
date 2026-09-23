@@ -22,8 +22,33 @@
 
 </div>
 
+<div id="confirmModal"
+     class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+
+    <div class="bg-white text-black p-6 rounded-xl shadow-lg w-96">
+        <h2 class="text-xl font-bold mb-4">Confirmar exclusão</h2>
+
+        <p id="confirmText" class="mb-6"></p>
+
+        <div class="flex justify-end gap-3">
+            <button onclick="closeModal()"
+                class="px-4 py-2 bg-gray-500 text-white rounded">
+                Não
+            </button>
+
+            <button onclick="confirmDelete()"
+                class="px-4 py-2 bg-red-600 text-white rounded">
+                Sim
+            </button>
+        </div>
+    </div>
+</div>
+
 <script>
     const API = "http://localhost:8080/api/clients";
+
+    let selectedClientId = null;
+    let selectedClientName = null;
 
     function getQuery() {
         const params = new URLSearchParams(window.location.search);
@@ -35,23 +60,55 @@
 
         if (!query) return;
 
-        // tenta CPF
-        fetch(`${API}/cpf/${query}`)
+        fetch(`${API}/cpf/${encodeURIComponent(query)}`)
             .then(res => {
                 if (!res.ok) throw new Error();
                 return res.json();
             })
             .then(client => render(client))
             .catch(() => {
-                // tenta nome
-                fetch(`${API}/name/${query}`)
-                    .then(res => res.json())
-                    .then(data => render(data[0]))
+                fetch(`${API}/name/${encodeURIComponent(query)}`)
+                    .then(res => {
+                        if (!res.ok) throw new Error();
+                        return res.json();
+                    })
+                    .then(renderSearchResults)
                     .catch(() => {
                         document.getElementById("content").innerHTML =
                             "<p>Aluno não encontrado</p>";
                     });
             });
+    }
+
+    function renderSearchResults(clients) {
+        if (clients.length === 0) {
+            document.getElementById("content").innerHTML = "<p>Aluno não encontrado</p>";
+            return;
+        }
+
+        if (clients.length === 1) {
+            render(clients[0]);
+            return;
+        }
+
+        window.searchResults = clients;
+        document.getElementById("content").innerHTML = `
+            <p class="mb-4">Foram encontrados ${clients.length} alunos. Selecione um:</p>
+            <div class="space-y-3">
+                ${clients.map(client => `
+                    <button type="button" class="w-full text-left bg-white/10 hover:bg-white/20 p-4 rounded-lg transition"
+                            onclick="renderSearchResult(${client.id})">
+                        <span class="block font-semibold">${client.name}</span>
+                        <span class="text-sm text-slate-300">CPF: ${client.cpf}</span>
+                    </button>
+                `).join("")}
+            </div>
+        `;
+    }
+
+    function renderSearchResult(id) {
+        const client = window.searchResults.find(result => result.id === id);
+        if (client) render(client);
     }
 
     function render(client) {
@@ -73,19 +130,51 @@
 
             </div>
 
-            <button onclick="deleteClient(${client.id})"
+            <button onclick="openDeleteModal(${client.id}, '${client.name}')"
                 class="mt-6 bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg">
                 Excluir
             </button>
         `;
     }
 
-    function deleteClient(id) {
-        fetch(`${API}/${id}`, { method: "DELETE" })
-            .then(() => {
-                alert("Excluído");
+    function openDeleteModal(id, name) {
+        selectedClientId = id;
+        selectedClientName = name;
+
+        document.getElementById("confirmText").innerText =
+            `Deseja realmente excluir o aluno "${name}"?`;
+
+        document.getElementById("confirmModal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+        document.getElementById("confirmModal").classList.add("hidden");
+    }
+
+    function confirmDelete() {
+        fetch(`${API}/${selectedClientId}`, {
+            method: "DELETE"
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error();
+            }
+
+            document.getElementById("confirmText").innerHTML =
+                `<span class="text-green-600 font-semibold">
+                    Aluno excluído com sucesso!
+                </span>`;
+
+            setTimeout(() => {
                 window.location.href = "index.html";
-            });
+            }, 1500);
+        })
+        .catch(() => {
+            document.getElementById("confirmText").innerHTML =
+                `<span class="text-red-600 font-semibold">
+                    Erro ao excluir aluno.
+                </span>`;
+        });
     }
 
     function goBack() {

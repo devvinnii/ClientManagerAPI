@@ -1,6 +1,8 @@
 package com.devvinnii.clientmanager.api.controller;
 
 import com.devvinnii.clientmanager.api.dto.ClientDTO;
+import com.devvinnii.clientmanager.api.dto.ClientResponseDTO;
+import com.devvinnii.clientmanager.api.mapper.ClientMapper;
 import com.devvinnii.clientmanager.api.model.Client;
 import com.devvinnii.clientmanager.api.service.ClientService;
 import jakarta.validation.Valid;
@@ -16,33 +18,41 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class ClientController {
     private final ClientService service;
+    private final ClientMapper mapper;
 
-    public ClientController(ClientService service) {
+    public ClientController(ClientService service, ClientMapper mapper) {
         this.service = service;
+        this.mapper = mapper;
     }
 
     @GetMapping
-    public ResponseEntity<List<Client>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+    public ResponseEntity<List<ClientResponseDTO>> getAll() {
+        return ResponseEntity.ok(mapper.toResponseList(service.getAll()));
     }
 
     @PostMapping(consumes = {"multipart/form-data"})
-    public ResponseEntity<Client> create(
+    public ResponseEntity<ClientResponseDTO> create(
             @Valid @ModelAttribute ClientDTO dto,
             @RequestParam(value = "photo", required = false) MultipartFile photo
     ) throws IOException {
         Client created = service.create(dto, photo);
-        return ResponseEntity.ok(created);
+        return ResponseEntity.ok(mapper.toResponse(created));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Client> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getById(id));
+    @GetMapping("/cpf/{cpf}")
+    public ResponseEntity<ClientResponseDTO> getByCpf(@PathVariable String cpf) {
+        return ResponseEntity.ok(mapper.toResponse(service.getByCpf(cpf)));
+    }
+
+    @GetMapping("/name/{name}")
+    public ResponseEntity<List<ClientResponseDTO>> searchByName(@PathVariable String name) {
+        return ResponseEntity.ok(mapper.toResponseList(service.searchByName(name)));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        String nome = service.delete(id);
+        return ResponseEntity.ok("O aluno " + nome + " foi excluído com sucesso!");
+
     }
 }

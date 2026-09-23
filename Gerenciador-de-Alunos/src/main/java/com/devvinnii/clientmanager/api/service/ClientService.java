@@ -27,10 +27,6 @@ public class ClientService {
     @Value("${file.upload-dir}")
     private String uploadDir;
 
-    // ======================
-    // MÉTODOS CRUD PRINCIPAIS
-    // ======================
-
     /**
      * Cria um novo cliente, validando CPF duplicado e salvando a foto (se existir).
      */
@@ -80,10 +76,12 @@ public class ClientService {
     /**
      * Deleta um cliente existente, removendo também a foto se houver.
      */
-    public void delete(Long id) {
+    public String delete(Long id) {
         Client client = getById(id);
 
-        // Exclui a foto do diretório local, se existir
+        String nome = client.getName();
+
+        // Exclui a foto
         if (client.getPhotoUrl() != null) {
             File file = new File(uploadDir + File.separator + client.getPhotoUrl());
             if (file.exists()) {
@@ -92,6 +90,8 @@ public class ClientService {
         }
 
         repository.delete(client);
+
+        return nome;
     }
 
     /**
@@ -132,10 +132,6 @@ public class ClientService {
         return repository.save(existing);
     }
 
-    // ======================
-    // MÉTODO UTILITÁRIO INTERNO
-    // ======================
-
     /**
      * Salva o arquivo localmente no diretório configurado.
      */
@@ -158,5 +154,17 @@ public class ClientService {
         Files.copy(file.getInputStream(), filePath);
 
         return fileName;
+    }
+
+    public Client getByCpf(String cpf) {
+        return repository.findByCpf(cpf)
+                .orElseThrow(() -> new ClientNotFoundException("Cliente com CPF " + cpf + " não encontrado"));
+    }
+
+    /**
+     * Busca clientes cujo nome contenha o termo informado, sem diferenciar maiúsculas de minúsculas.
+     */
+    public List<Client> searchByName(String name) {
+        return repository.findByNameContainingIgnoreCaseOrderByNameAsc(name);
     }
 }
