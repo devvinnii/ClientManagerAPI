@@ -31,9 +31,11 @@ public class SecurityConfig {
                         .authenticationEntryPoint(authenticationEntryPoint)
                         .accessDeniedHandler(accessDeniedHandler))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/api/auth/login", "/uploads/**").permitAll()
+                        .requestMatchers("/api/auth/login").permitAll()
                         .requestMatchers(HttpMethod.DELETE, "/api/clients/**").hasRole("ADMIN")
-                        .requestMatchers("/api/clients/**", "/api/auth/me").hasAnyRole("ADMIN", "OPERADOR")
+                        .requestMatchers(HttpMethod.PATCH, "/api/clients/*/active").hasRole("ADMIN")
+                        .requestMatchers("/api/clients/**", "/api/auth/me")
+                        .hasAnyRole("ADMIN", "CHEFE", "FUNCIONARIO", "OPERADOR")
                         .anyRequest().denyAll())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();

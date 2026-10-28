@@ -1,0 +1,160 @@
+<div class="fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-4" role="presentation">
+  <button
+    type="button"
+    class="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]"
+    aria-label="Fechar formulário"
+    (click)="!saving && closed.emit()"
+  ></button>
+
+  <section
+    class="relative max-h-[95dvh] w-full overflow-y-auto rounded-t-3xl bg-white shadow-2xl sm:max-w-2xl sm:rounded-3xl"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="student-form-title"
+  >
+    <header class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/95 px-5 py-4 backdrop-blur sm:px-7">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[0.16em] text-sky-700">Gestão de alunos</p>
+        <h2 id="student-form-title" class="mt-1 text-xl font-black text-slate-900">
+          {{ student ? 'Editar aluno' : 'Cadastrar aluno' }}
+        </h2>
+      </div>
+      <button
+        type="button"
+        (click)="closed.emit()"
+        [disabled]="saving"
+        class="grid size-10 place-items-center rounded-xl text-2xl text-slate-500 hover:bg-slate-100 disabled:opacity-50"
+        aria-label="Fechar"
+      >
+        ×
+      </button>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="p-5 sm:p-7" novalidate>
+      @if (apiMessage) {
+        <div class="mb-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">
+          {{ apiMessage }}
+        </div>
+      }
+
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div class="sm:col-span-2">
+          <label for="student-name" class="mb-2 block text-sm font-bold text-slate-700">Nome completo *</label>
+          <input
+            id="student-name"
+            type="text"
+            formControlName="name"
+            autocomplete="name"
+            class="min-h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-sky-600 focus:ring-4 focus:ring-sky-100"
+            [attr.aria-invalid]="!!fieldError('name')"
+          />
+          @if (fieldError('name'); as error) {
+            <p class="mt-1.5 text-sm text-red-700">{{ error }}</p>
+          }
+        </div>
+
+        <div>
+          <label for="student-cpf" class="mb-2 block text-sm font-bold text-slate-700">CPF *</label>
+          <input
+            id="student-cpf"
+            type="text"
+            inputmode="numeric"
+            formControlName="cpf"
+            maxlength="11"
+            placeholder="Somente números"
+            (input)="normalizeCpf()"
+            class="min-h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-sky-600 focus:ring-4 focus:ring-sky-100"
+            [attr.aria-invalid]="!!fieldError('cpf')"
+          />
+          @if (fieldError('cpf'); as error) {
+            <p class="mt-1.5 text-sm text-red-700">{{ error }}</p>
+          }
+        </div>
+
+        <div>
+          <label for="student-phone" class="mb-2 block text-sm font-bold text-slate-700">Telefone</label>
+          <input
+            id="student-phone"
+            type="tel"
+            inputmode="numeric"
+            formControlName="phone"
+            maxlength="11"
+            placeholder="DDD + número"
+            (input)="normalizePhone()"
+            class="min-h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-sky-600 focus:ring-4 focus:ring-sky-100"
+            [attr.aria-invalid]="!!fieldError('phone')"
+          />
+          @if (fieldError('phone'); as error) {
+            <p class="mt-1.5 text-sm text-red-700">{{ error }}</p>
+          }
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="student-email" class="mb-2 block text-sm font-bold text-slate-700">E-mail</label>
+          <input
+            id="student-email"
+            type="email"
+            formControlName="email"
+            autocomplete="email"
+            class="min-h-12 w-full rounded-xl border border-slate-300 px-4 outline-none focus:border-sky-600 focus:ring-4 focus:ring-sky-100"
+            [attr.aria-invalid]="!!fieldError('email')"
+          />
+          @if (fieldError('email'); as error) {
+            <p class="mt-1.5 text-sm text-red-700">{{ error }}</p>
+          }
+        </div>
+
+        <div class="sm:col-span-2">
+          <label for="student-photo" class="mb-2 block text-sm font-bold text-slate-700">
+            {{ student?.photoUrl ? 'Substituir foto' : 'Foto' }}
+          </label>
+          <div class="flex flex-col gap-4 rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-4 sm:flex-row sm:items-center">
+            @if (photoPreview()) {
+              <img [src]="photoPreview()" alt="Prévia da nova foto" class="size-20 rounded-full object-cover" />
+            } @else if (student) {
+              <app-student-avatar [student]="student" size="lg" />
+            } @else {
+              <div class="grid size-20 place-items-center rounded-full bg-slate-200 text-2xl text-slate-500" aria-hidden="true">+</div>
+            }
+            <div class="flex-1">
+              <input
+                id="student-photo"
+                type="file"
+                accept="image/png,image/jpeg,.png,.jpg,.jpeg"
+                (change)="selectPhoto($event)"
+                class="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-sky-100 file:px-4 file:py-2 file:font-bold file:text-sky-800 hover:file:bg-sky-200"
+              />
+              <p class="mt-2 text-xs leading-relaxed text-slate-500">PNG, JPG ou JPEG, com no máximo 10 MB.</p>
+              @if (photoError()) {
+                <p class="mt-1.5 text-sm text-red-700">{{ photoError() }}</p>
+              }
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <button
+          type="button"
+          (click)="closed.emit()"
+          [disabled]="saving"
+          class="min-h-11 rounded-xl border border-slate-300 px-5 font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+        >
+          Cancelar
+        </button>
+        <button
+          type="submit"
+          [disabled]="saving"
+          class="flex min-h-11 items-center justify-center rounded-xl bg-sky-700 px-6 font-bold text-white hover:bg-sky-800 disabled:cursor-not-allowed disabled:opacity-60"
+        >
+          @if (saving) {
+            <span class="mr-2 size-4 animate-spin rounded-full border-2 border-white/30 border-t-white"></span>
+            Salvando...
+          } @else {
+            {{ student ? 'Salvar alterações' : 'Cadastrar aluno' }}
+          }
+        </button>
+      </div>
+    </form>
+  </section>
+</div>

@@ -1,0 +1,36 @@
+<aside class="flex h-full w-72 flex-col bg-[#0d2742] px-4 py-5 text-slate-100 shadow-2xl">
+  <div class="px-2 pb-7">
+    <app-brand-mark tone="light" />
+  </div>
+
+  <nav aria-label="Navegação principal" class="flex-1">
+    <p class="px-3 pb-2 text-[0.68rem] font-bold uppercase tracking-[0.2em] text-slate-400">
+      Navegação
+    </p>
+    <ul class="space-y-1">
+      @for (item of visibleItems(); track item.route) {
+        <li>
+          <a
+            [routerLink]="item.route"
+            routerLinkActive="bg-white/12 text-white shadow-sm"
+            [routerLinkActiveOptions]="{ exact: true }"
+            (click)="navigate.emit()"
+            class="group flex min-h-11 items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-300 transition hover:bg-white/8 hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-300"
+          >
+            <span class="grid size-8 place-items-center rounded-lg bg-white/5 text-teal-300 group-hover:bg-white/10">
+              <app-nav-icon [name]="item.icon" />
+            </span>
+            {{ item.label }}
+          </a>
+        </li>
+      }
+    </ul>
+  </nav>
+
+  <div class="rounded-2xl border border-white/10 bg-white/5 p-4">
+    <p class="text-xs font-bold uppercase tracking-wider text-teal-300">Área interna</p>
+    <p class="mt-2 text-xs leading-relaxed text-slate-400">
+      Ambiente exclusivo para a equipe da Talentos do Capão.
+    </p>
+  </div>
+</aside>

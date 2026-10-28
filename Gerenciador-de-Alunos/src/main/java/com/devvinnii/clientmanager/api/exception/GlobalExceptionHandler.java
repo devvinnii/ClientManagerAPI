@@ -27,18 +27,24 @@ import java.util.Map;
 public class GlobalExceptionHandler {
     private static final Logger LOGGER = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
-    // Cliente não encontrado
-    @ExceptionHandler(ClientNotFoundException.class)
-    public ResponseEntity<ApiError> handleClientNotFound(ClientNotFoundException ex, HttpServletRequest request) {
+    // Aluno não encontrado
+    @ExceptionHandler(StudentNotFoundException.class)
+    public ResponseEntity<ApiError> handleStudentNotFound(StudentNotFoundException ex, HttpServletRequest request) {
         ApiError error = ApiError.from(HttpStatus.NOT_FOUND, ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
-    // CPF duplicado
-    @ExceptionHandler(ClientAlreadyExistsException.class)
-    public ResponseEntity<ApiError> handleClientAlreadyExists(ClientAlreadyExistsException ex, HttpServletRequest request) {
+    // CPF duplicado de aluno
+    @ExceptionHandler(StudentAlreadyExistsException.class)
+    public ResponseEntity<ApiError> handleStudentAlreadyExists(StudentAlreadyExistsException ex, HttpServletRequest request) {
         ApiError error = ApiError.from(HttpStatus.CONFLICT, ex.getMessage(), request.getRequestURI());
         return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(InvalidStudentQueryException.class)
+    public ResponseEntity<ApiError> handleInvalidStudentQuery(InvalidStudentQueryException ex, HttpServletRequest request) {
+        ApiError error = ApiError.from(HttpStatus.BAD_REQUEST, ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
     // Erro de upload de arquivo
@@ -46,6 +52,19 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiError> handleFileUpload(FileUploadException ex, HttpServletRequest request) {
         LOGGER.error("Erro ao processar upload em {}", request.getRequestURI(), ex);
         ApiError error = ApiError.from(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao processar o arquivo enviado", request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(InvalidPhotoException.class)
+    public ResponseEntity<ApiError> handleInvalidPhoto(InvalidPhotoException ex, HttpServletRequest request) {
+        ApiError error = ApiError.from(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
+    }
+
+    @ExceptionHandler(PhotoStorageException.class)
+    public ResponseEntity<ApiError> handlePhotoStorage(PhotoStorageException ex, HttpServletRequest request) {
+        LOGGER.error("Erro no armazenamento de foto em {}", request.getRequestURI(), ex);
+        ApiError error = ApiError.from(HttpStatus.INTERNAL_SERVER_ERROR, "Erro ao processar a foto", request.getRequestURI());
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
