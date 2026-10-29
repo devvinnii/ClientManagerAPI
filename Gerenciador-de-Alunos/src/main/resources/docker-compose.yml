@@ -3,7 +3,6 @@ services:
     build:
       context: ../../..
       dockerfile: Dockerfile
-    container_name: gerenciador-alunos-api
     environment:
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET deve estar definida}
       JWT_EXPIRATION_MS: ${JWT_EXPIRATION_MS:-3600000}
@@ -13,23 +12,25 @@ services:
       BOOTSTRAP_ADMIN_ENABLED: ${BOOTSTRAP_ADMIN_ENABLED:-false}
       BOOTSTRAP_ADMIN_USERNAME: ${BOOTSTRAP_ADMIN_USERNAME:-}
       BOOTSTRAP_ADMIN_PASSWORD: ${BOOTSTRAP_ADMIN_PASSWORD:-}
+      CORS_ALLOWED_ORIGINS: ${CORS_ALLOWED_ORIGINS:-http://localhost:4200}
     ports:
-      - "8080:8080"
+      - "${API_PORT:-8080}:8080"
+    volumes:
+      - uploads_data:/app/uploads
     depends_on:
       mysql:
         condition: service_healthy
 
   mysql:
     image: mysql:8.0
-    container_name: mysql-studentapp
-    restart: always
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD deve estar definida}
       MYSQL_DATABASE: studentdb
       MYSQL_USER: ${MYSQL_USER:?MYSQL_USER deve estar definida}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD:?MYSQL_PASSWORD deve estar definida}
     ports:
-      - "3306:3306"
+      - "${MYSQL_PORT:-3306}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
@@ -40,13 +41,13 @@ services:
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
-    container_name: phpmyadmin-studentapp
-    restart: always
+    restart: unless-stopped
     ports:
-      - "8081:80"
+      - "${PHPMYADMIN_PORT:-8081}:80"
     environment:
       PMA_HOST: mysql
       PMA_PORT: 3306
 
 volumes:
   mysql_data:
+  uploads_data:

@@ -17,6 +17,9 @@ arquivo `.env` local fora do Git.
 ```powershell
 $env:JWT_SECRET = [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))
 $env:JWT_EXPIRATION_MS = "3600000"
+$taskDbCredential = Get-Credential -Message "Credenciais do MySQL de desenvolvimento"
+$env:SPRING_DATASOURCE_USERNAME = $taskDbCredential.UserName
+$env:SPRING_DATASOURCE_PASSWORD = $taskDbCredential.GetNetworkCredential().Password
 ```
 
 Em seguida, execute a aplicação:
@@ -25,18 +28,36 @@ Em seguida, execute a aplicação:
 mvn spring-boot:run
 ```
 
+Esse modo usa `jdbc:mysql://localhost:3306/studentdb`. Use somente uma instância
+local de desenvolvimento. Para outra URL, defina também `SPRING_DATASOURCE_URL`.
+
 ### Docker Compose
 
-Crie um arquivo `.env` local a partir do exemplo e preencha `JWT_SECRET`, ou
-exporte a variável no terminal antes de subir os serviços:
+Crie um arquivo `.env` local a partir do exemplo, preencha os valores obrigatórios
+e mantenha esse arquivo fora do Git. Use um nome de projeto exclusivo para que os
+containers e volumes de desenvolvimento não se misturem com outros ambientes:
 
 ```powershell
-$env:JWT_SECRET = [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32))
-docker compose -f src/main/resources/docker-compose.yml up --build
+Copy-Item .env.example .env
+# Edite .env e defina JWT_SECRET, MYSQL_ROOT_PASSWORD, MYSQL_USER e MYSQL_PASSWORD.
+docker compose --env-file .env -p gerenciador-alunos-dev `
+  -f src/main/resources/docker-compose.yml up --build -d mysql api
 ```
 
-O serviço `api` recebe a variável diretamente do ambiente. O Compose falha de
-forma explícita se `JWT_SECRET` não estiver definida.
+Se as portas padrão já estiverem ocupadas, ajuste `API_PORT`, `MYSQL_PORT` e
+`PHPMYADMIN_PORT` no `.env`. O backend acessa o MySQL pela rede interna do Compose,
+independentemente da porta publicada no host. Os volumes `mysql_data` e
+`uploads_data` são isolados pelo nome do projeto e preservam banco e fotos durante
+reinicializações.
+
+O serviço `api` recebe os segredos diretamente do ambiente. O Compose falha de
+forma explícita quando `JWT_SECRET` ou as credenciais do MySQL não estão definidas.
+Para encerrar os containers mantendo os dados locais:
+
+```powershell
+docker compose --env-file .env -p gerenciador-alunos-dev `
+  -f src/main/resources/docker-compose.yml down
+```
 
 ## Desenvolvimento
 

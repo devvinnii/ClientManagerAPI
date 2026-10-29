@@ -30,6 +30,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.options;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -223,7 +225,8 @@ class GerenciadorDeAlunosApplicationTests {
 					.header("Authorization", bearer("funcionario"))
 					.param("name", "Bruno")
 					.param("cpf", "11144477735"))
-				.andExpect(status().isOk())
+				.andExpect(status().isCreated())
+				.andExpect(header().exists("Location"))
 				.andExpect(jsonPath("$.name").value("Bruno"));
 		mockMvc.perform(delete("/api/clients/" + student.getId())
 					.header("Authorization", bearer("funcionario")))
@@ -250,7 +253,7 @@ class GerenciadorDeAlunosApplicationTests {
 					.header("Authorization", bearer("operador"))
 					.param("name", "Ana Foto")
 					.param("cpf", "52998224725"))
-				.andExpect(status().isOk())
+				.andExpect(status().isCreated())
 				.andExpect(jsonPath("$.photoUrl").value(org.hamcrest.Matchers.matchesPattern("[a-f0-9-]+\\.png")));
 
 		String storedName = repository.findByCpf("52998224725").orElseThrow().getPhotoUrl();
@@ -382,6 +385,20 @@ class GerenciadorDeAlunosApplicationTests {
 		mockMvc.perform(delete("/api/clients/" + student.getId()).header("Authorization", bearer("admin")))
 				.andExpect(status().isOk());
 		assertThat(repository.findById(student.getId())).isEmpty();
+	}
+
+	@Test
+	void allowsCorsOnlyForTheConfiguredAdminOrigin() throws Exception {
+		mockMvc.perform(options("/api/clients")
+					.header("Origin", "http://localhost:4200")
+					.header("Access-Control-Request-Method", "GET"))
+				.andExpect(status().isOk())
+				.andExpect(header().string("Access-Control-Allow-Origin", "http://localhost:4200"));
+
+		mockMvc.perform(options("/api/clients")
+					.header("Origin", "https://origem-nao-confiavel.example")
+					.header("Access-Control-Request-Method", "GET"))
+				.andExpect(status().isForbidden());
 	}
 
 	private org.springframework.test.web.servlet.ResultActions performPhotoUpload(MockMultipartFile photo) throws Exception {

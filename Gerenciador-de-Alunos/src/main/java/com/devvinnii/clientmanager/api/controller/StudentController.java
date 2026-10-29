@@ -11,13 +11,14 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/clients")
-@CrossOrigin(origins = "*")
 public class StudentController {
     private final StudentService service;
     private final StudentMapper mapper;
@@ -52,7 +53,11 @@ public class StudentController {
             @RequestParam(value = "photo", required = false) MultipartFile photo
     ) throws IOException {
         Student created = service.create(dto, photo);
-        return ResponseEntity.ok(mapper.toResponse(created));
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(created.getId())
+                .toUri();
+        return ResponseEntity.created(location).body(mapper.toResponse(created));
     }
 
     @GetMapping("/cpf/{cpf}")
