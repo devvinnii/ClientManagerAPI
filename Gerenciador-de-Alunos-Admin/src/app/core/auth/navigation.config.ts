@@ -37,7 +37,7 @@ export const navigationItems: readonly NavigationItem[] = [
     route: '/classes',
     icon: 'classes',
     roles: ['ADMIN', 'CHEFE', 'FUNCIONARIO', 'OPERADOR'],
-    implemented: false,
+    implemented: true,
   },
   {
     label: 'Usuários',

@@ -41,10 +41,17 @@ src/app/
   core/          autenticação, guards, interceptors e configuração de navegação
   shared/        modelos e componentes reutilizáveis
   layout/        shell administrativo, sidebar e header
-  features/      login, dashboard, alunos e páginas de erro
+  features/      login, dashboard, alunos, turmas e páginas de erro
 ```
 
-Os módulos de turmas, usuários, auditoria, configurações e relatórios ainda não foram implementados. A matriz de navegação já reserva as permissões futuras sem expor rotas inexistentes.
+O módulo de turmas está integrado aos endpoints reais em `/api/turmas` e cobre
+consulta, filtros, horários, ocupação, cadastro, edição, status e histórico de
+matrículas. Usuários autenticados podem consultar; ações de escrita aparecem
+somente para administradores e continuam protegidas pelo backend.
+
+Os módulos de usuários, auditoria, configurações e relatórios ainda não foram
+implementados. A matriz de navegação reserva as permissões futuras sem expor
+rotas inexistentes.
 
 ## Deploy sob `/admin`
 

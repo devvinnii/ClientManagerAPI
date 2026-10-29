@@ -1,4 +1,4 @@
-<header class="flex min-h-20 items-center justify-between border-b border-slate-200 bg-white px-4 sm:px-6 lg:px-8">
+<header class="sticky top-0 z-30 flex min-h-[4.5rem] items-center justify-between border-b border-slate-200/90 bg-white/95 px-4 backdrop-blur-xl sm:px-6 lg:px-8">
   <div class="flex items-center gap-3">
     <button
       type="button"
@@ -14,23 +14,23 @@
       <app-brand-mark [compact]="true" />
     </div>
     <div class="hidden lg:block">
-      <p class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-400">Painel administrativo</p>
-      <p class="hidden text-sm font-semibold text-slate-700 sm:block">Gestão segura e simples para a equipe</p>
+      <p class="text-[0.68rem] font-bold uppercase tracking-[0.17em] text-slate-400">Painel administrativo</p>
+      <p class="mt-0.5 text-sm font-bold text-slate-800">{{ currentSection() }}</p>
     </div>
   </div>
 
-  <div class="flex items-center gap-3">
+  <div class="flex items-center gap-2 sm:gap-3">
     <div class="hidden text-right sm:block">
-      <p class="max-w-48 truncate text-sm font-bold text-slate-800">{{ user()?.username }}</p>
-      <p class="text-xs font-medium text-sky-700">{{ roleLabel() }}</p>
+      <p class="max-w-48 truncate text-sm font-bold text-slate-900">{{ user()?.username }}</p>
+      <p class="mt-0.5 text-xs font-semibold text-sky-700">{{ roleLabel() }}</p>
     </div>
-    <div class="grid size-10 place-items-center rounded-full bg-sky-100 font-bold uppercase text-sky-800" aria-hidden="true">
+    <div class="grid size-10 place-items-center rounded-full border-2 border-white bg-sky-100 font-extrabold uppercase text-sky-800 shadow-sm ring-1 ring-sky-200" aria-hidden="true">
       {{ user()?.username?.charAt(0) || '?' }}
     </div>
     <button
       type="button"
       (click)="logout()"
-      class="min-h-10 rounded-xl border border-slate-200 px-3 text-sm font-semibold text-slate-600 transition hover:border-red-200 hover:bg-red-50 hover:text-red-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600"
+      class="ui-button ui-button-secondary min-h-10 px-3 hover:border-red-200 hover:bg-red-50 hover:text-red-700"
     >
       Sair
     </button>

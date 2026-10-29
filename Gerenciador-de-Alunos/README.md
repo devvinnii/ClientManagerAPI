@@ -66,3 +66,25 @@ docker compose --env-file .env -p gerenciador-alunos-dev `
 - H2 em memória para testes
 
 Execute os testes com `mvn test`.
+
+## Gestão de turmas
+
+O módulo utiliza as modalidades oficiais `NATACAO`, `TRIATHLON` e `BALLET`.
+As migrations V1–V3 permanecem inalteradas; a V4 cria `class_group`,
+`class_schedule` e `enrollment`, mantendo a tabela histórica `client`.
+
+Rotas disponíveis em `/api/turmas`:
+
+- `GET /api/turmas` — consulta paginada por nome, modalidade e status.
+- `GET /api/turmas/{id}` — detalhes, horários e ocupação.
+- `POST /api/turmas` e `PUT /api/turmas/{id}` — cadastro e edição.
+- `PATCH /api/turmas/{id}/status` — ativação ou inativação lógica.
+- `GET /api/turmas/{id}/matriculas` — histórico de matrículas.
+- `POST /api/turmas/{id}/matriculas` — matrícula de aluno ativo.
+- `DELETE /api/turmas/{id}/matriculas/{matriculaId}` — cancelamento lógico.
+- `POST /api/turmas/{id}/matriculas/{matriculaId}/rematricula` — nova matrícula preservando o histórico.
+- `GET /api/turmas/alunos/{alunoId}` — turmas e histórico do aluno.
+
+As consultas exigem um usuário autenticado com um dos perfis existentes. Todas
+as operações de escrita são exclusivas de `ADMIN`. A matrícula é serializada por
+turma para impedir duas ocupações simultâneas da última vaga.

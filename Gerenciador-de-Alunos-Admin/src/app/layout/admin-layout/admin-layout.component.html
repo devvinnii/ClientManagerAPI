@@ -1,4 +1,4 @@
-<div class="min-h-dvh bg-slate-50 text-slate-900">
+<div class="min-h-dvh text-slate-900">
   <div class="fixed inset-y-0 left-0 z-40 hidden lg:block">
     <app-sidebar />
   </div>
@@ -17,7 +17,7 @@
 
   <div class="lg:pl-72">
     <app-header (menuToggle)="mobileMenuOpen.set(true)" />
-    <main class="mx-auto w-full max-w-[100rem] p-4 sm:p-6 lg:p-8">
+    <main class="mx-auto w-full max-w-[96rem] px-4 py-5 sm:px-6 sm:py-7 lg:px-8 lg:py-8">
       <router-outlet />
     </main>
   </div>

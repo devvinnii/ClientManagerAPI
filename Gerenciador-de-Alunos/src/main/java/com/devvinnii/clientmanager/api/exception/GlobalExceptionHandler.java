@@ -47,6 +47,24 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 
+    @ExceptionHandler({ClassGroupNotFoundException.class, EnrollmentNotFoundException.class})
+    public ResponseEntity<ApiError> handleClassResourceNotFound(RuntimeException ex, HttpServletRequest request) {
+        ApiError error = ApiError.from(HttpStatus.NOT_FOUND, ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+    @ExceptionHandler(ClassGroupConflictException.class)
+    public ResponseEntity<ApiError> handleClassGroupConflict(ClassGroupConflictException ex, HttpServletRequest request) {
+        ApiError error = ApiError.from(HttpStatus.CONFLICT, ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(InvalidClassGroupException.class)
+    public ResponseEntity<ApiError> handleInvalidClassGroup(InvalidClassGroupException ex, HttpServletRequest request) {
+        ApiError error = ApiError.from(HttpStatus.UNPROCESSABLE_ENTITY, ex.getMessage(), request.getRequestURI());
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(error);
+    }
+
     // Erro de upload de arquivo
     @ExceptionHandler(FileUploadException.class)
     public ResponseEntity<ApiError> handleFileUpload(FileUploadException ex, HttpServletRequest request) {

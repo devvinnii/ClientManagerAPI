@@ -6,12 +6,12 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
     <div class="fixed inset-0 z-[70] flex items-center justify-center p-4" role="presentation">
       <button
         type="button"
-        class="absolute inset-0 bg-slate-950/60 backdrop-blur-[2px]"
+        class="ui-modal-backdrop"
         aria-label="Cancelar ação"
         (click)="cancel.emit()"
       ></button>
       <section
-        class="relative w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl"
+        class="ui-modal-panel w-full max-w-md rounded-3xl p-6 sm:p-7"
         role="alertdialog"
         aria-modal="true"
         aria-labelledby="confirmation-title"
@@ -35,7 +35,7 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
             type="button"
             (click)="cancel.emit()"
             [disabled]="loading"
-            class="min-h-11 rounded-xl border border-slate-300 px-5 font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-50"
+            class="ui-button ui-button-secondary"
           >
             Cancelar
           </button>
@@ -43,7 +43,7 @@ import { Component, EventEmitter, HostListener, Input, Output } from '@angular/c
             type="button"
             (click)="confirm.emit()"
             [disabled]="loading"
-            class="flex min-h-11 items-center justify-center rounded-xl px-5 font-bold text-white disabled:opacity-60"
+            class="ui-button px-5 text-white"
             [class.bg-red-700]="danger"
             [class.bg-amber-600]="!danger"
           >

@@ -11,7 +11,7 @@ import { ToastService } from '../../../core/services/toast.service';
     >
       @for (toast of toasts.messages(); track toast.id) {
         <article
-          class="pointer-events-auto w-full rounded-2xl border bg-white p-4 shadow-xl shadow-slate-900/10"
+          class="pointer-events-auto w-full rounded-2xl border bg-white p-4 shadow-[0_18px_45px_rgba(15,23,42,0.14)]"
           [class.border-emerald-200]="toast.type === 'success'"
           [class.border-red-200]="toast.type === 'error'"
           role="status"
@@ -36,7 +36,7 @@ import { ToastService } from '../../../core/services/toast.service';
             <button
               type="button"
               (click)="toasts.remove(toast.id)"
-              class="grid size-8 shrink-0 place-items-center rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700"
+              class="ui-icon-button size-8 shrink-0"
               aria-label="Fechar mensagem"
             >
               ×

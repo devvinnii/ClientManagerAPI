@@ -1,43 +1,41 @@
 <app-toast-container />
 
-<section aria-labelledby="students-title">
-  <div class="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-    <div>
-      <p class="text-sm font-bold uppercase tracking-[0.18em] text-sky-700">Gestão acadêmica</p>
-      <h1 id="students-title" class="mt-2 text-3xl font-black tracking-tight text-slate-900">Alunos</h1>
-      <p class="mt-2 max-w-2xl text-slate-500">
-        Consulte, cadastre e mantenha atualizados os dados dos alunos da organização.
-      </p>
-    </div>
+<section class="ui-page" aria-labelledby="students-title">
+  <app-page-header
+    titleId="students-title"
+    eyebrow="Gestão acadêmica"
+    title="Alunos"
+    description="Consulte, cadastre e mantenha atualizados os dados dos alunos da organização."
+  >
     <button
       type="button"
       (click)="openCreate()"
-      class="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-sky-700 px-5 font-bold text-white shadow-lg shadow-sky-700/15 transition hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-700"
+      class="ui-button ui-button-primary"
     >
-      <span class="text-xl leading-none" aria-hidden="true">+</span>
+      <span class="text-lg leading-none" aria-hidden="true">＋</span>
       Cadastrar aluno
     </button>
-  </div>
+  </app-page-header>
 
   <form
     [formGroup]="filters"
     (ngSubmit)="applyFilters()"
-    class="mt-7 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5"
+    class="ui-card mt-7 p-4 sm:p-5"
     aria-label="Filtros de alunos"
   >
     <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-[minmax(14rem,1.5fr)_minmax(11rem,1fr)_11rem_auto]">
       <div>
-        <label for="filter-name" class="mb-1.5 block text-sm font-bold text-slate-700">Buscar por nome</label>
+        <label for="filter-name" class="ui-label">Buscar por nome</label>
         <input
           id="filter-name"
           type="search"
           formControlName="name"
           placeholder="Nome ou parte do nome"
-          class="min-h-11 w-full rounded-xl border border-slate-300 px-4 outline-none placeholder:text-slate-400 focus:border-sky-600 focus:ring-4 focus:ring-sky-100"
+          class="ui-input"
         />
       </div>
       <div>
-        <label for="filter-cpf" class="mb-1.5 block text-sm font-bold text-slate-700">Buscar por CPF</label>
+        <label for="filter-cpf" class="ui-label">Buscar por CPF</label>
         <input
           id="filter-cpf"
           type="search"
@@ -46,15 +44,15 @@
           formControlName="cpf"
           placeholder="11 dígitos"
           (input)="normalizeFilterCpf()"
-          class="min-h-11 w-full rounded-xl border border-slate-300 px-4 outline-none placeholder:text-slate-400 focus:border-sky-600 focus:ring-4 focus:ring-sky-100"
+          class="ui-input"
         />
       </div>
       <div>
-        <label for="filter-status" class="mb-1.5 block text-sm font-bold text-slate-700">Status</label>
+        <label for="filter-status" class="ui-label">Status</label>
         <select
           id="filter-status"
           formControlName="active"
-          class="min-h-11 w-full rounded-xl border border-slate-300 bg-white px-3 outline-none focus:border-sky-600 focus:ring-4 focus:ring-sky-100"
+          class="ui-select"
         >
           <option value="all">Todos</option>
           <option value="true">Ativos</option>
@@ -62,13 +60,13 @@
         </select>
       </div>
       <div class="flex items-end gap-2">
-        <button type="submit" class="min-h-11 flex-1 rounded-xl bg-slate-900 px-5 font-bold text-white hover:bg-slate-800">
+        <button type="submit" class="ui-button ui-button-primary flex-1">
           Filtrar
         </button>
         <button
           type="button"
           (click)="clearFilters()"
-          class="min-h-11 rounded-xl border border-slate-300 px-4 font-bold text-slate-600 hover:bg-slate-50"
+          class="ui-button ui-button-secondary px-4"
           aria-label="Limpar filtros"
         >
           Limpar
@@ -76,14 +74,14 @@
       </div>
     </div>
 
-    <div class="mt-4 grid gap-4 border-t border-slate-100 pt-4 sm:grid-cols-3 lg:max-w-2xl">
-      <div>
+    <div class="mt-5 grid grid-cols-2 gap-4 border-t border-slate-100 pt-5 sm:grid-cols-3 lg:max-w-2xl">
+      <div class="col-span-2 sm:col-span-1">
         <label for="sort-field" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">Ordenar por</label>
         <select
           id="sort-field"
           [value]="sortBy()"
           (change)="changeSortField($event)"
-          class="min-h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm"
+          class="ui-select min-h-10 py-2 text-sm"
         >
           <option value="name">Nome</option>
           <option value="cpf">CPF</option>
@@ -98,7 +96,7 @@
           id="sort-direction"
           [value]="sortDirection()"
           (change)="changeSortDirection($event)"
-          class="min-h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm"
+          class="ui-select min-h-10 py-2 text-sm"
         >
           <option value="ASC">Crescente</option>
           <option value="DESC">Decrescente</option>
@@ -110,7 +108,7 @@
           id="page-size"
           [value]="size()"
           (change)="changePageSize($event)"
-          class="min-h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm"
+          class="ui-select min-h-10 py-2 text-sm"
         >
           <option value="10">10 alunos</option>
           <option value="20">20 alunos</option>
@@ -120,17 +118,17 @@
     </div>
   </form>
 
-  <div class="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+  <div class="ui-card mt-5 overflow-hidden">
     @if (loading()) {
       <div class="divide-y divide-slate-100" aria-label="Carregando alunos" role="status">
         @for (row of skeletonRows; track row) {
-          <div class="flex animate-pulse items-center gap-4 p-5">
-            <div class="size-11 shrink-0 rounded-full bg-slate-200"></div>
+          <div class="flex items-center gap-4 p-5">
+            <div class="ui-skeleton size-11 shrink-0 rounded-full"></div>
             <div class="flex-1">
-              <div class="h-3 w-2/5 rounded-full bg-slate-200"></div>
-              <div class="mt-2 h-2.5 w-1/4 rounded-full bg-slate-100"></div>
+              <div class="ui-skeleton h-3 w-2/5 rounded-full"></div>
+              <div class="ui-skeleton mt-2 h-2.5 w-1/4 rounded-full"></div>
             </div>
-            <div class="hidden h-8 w-32 rounded-lg bg-slate-100 sm:block"></div>
+            <div class="ui-skeleton hidden h-8 w-32 rounded-lg sm:block"></div>
           </div>
         }
         <span class="sr-only">Carregando lista de alunos</span>
@@ -140,20 +138,22 @@
         <div class="grid size-14 place-items-center rounded-2xl bg-red-100 text-2xl font-black text-red-700" aria-hidden="true">!</div>
         <h2 class="mt-4 text-xl font-black text-slate-900">Não foi possível carregar os alunos</h2>
         <p class="mt-2 max-w-md text-slate-500">{{ loadError() }}</p>
-        <button type="button" (click)="loadStudents()" class="mt-5 min-h-11 rounded-xl bg-sky-700 px-5 font-bold text-white hover:bg-sky-800">
+        <button type="button" (click)="loadStudents()" class="ui-button ui-button-primary mt-5">
           Tentar novamente
         </button>
       </div>
     } @else if (students().length === 0) {
       <div class="flex min-h-72 flex-col items-center justify-center p-8 text-center">
-        <div class="grid size-16 place-items-center rounded-full bg-sky-100 text-3xl text-sky-700" aria-hidden="true">⌕</div>
+        <div class="ui-empty-icon" aria-hidden="true">
+          <svg class="size-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>
+        </div>
         <h2 class="mt-5 text-xl font-black text-slate-900">Nenhum aluno encontrado</h2>
         <p class="mt-2 max-w-md text-slate-500">Ajuste os filtros ou cadastre o primeiro aluno.</p>
         <div class="mt-5 flex flex-wrap justify-center gap-3">
-          <button type="button" (click)="clearFilters()" class="min-h-11 rounded-xl border border-slate-300 px-5 font-bold text-slate-700 hover:bg-slate-50">
+          <button type="button" (click)="clearFilters()" class="ui-button ui-button-secondary">
             Limpar filtros
           </button>
-          <button type="button" (click)="openCreate()" class="min-h-11 rounded-xl bg-sky-700 px-5 font-bold text-white hover:bg-sky-800">
+          <button type="button" (click)="openCreate()" class="ui-button ui-button-primary">
             Cadastrar aluno
           </button>
         </div>
@@ -161,7 +161,7 @@
     } @else {
       <div class="hidden overflow-x-auto lg:block">
         <table class="w-full min-w-[68rem] border-collapse text-left">
-          <thead class="border-b border-slate-200 bg-slate-50/80 text-xs font-bold uppercase tracking-wider text-slate-500">
+          <thead class="ui-table-head border-b border-slate-200">
             <tr>
               <th class="px-5 py-4" [attr.aria-sort]="ariaSort('name')">
                 <button type="button" (click)="sort('name')" class="flex items-center gap-1.5 hover:text-sky-700">
@@ -192,7 +192,7 @@
           </thead>
           <tbody class="divide-y divide-slate-100">
             @for (student of students(); track student.id) {
-              <tr class="transition hover:bg-sky-50/40">
+              <tr class="ui-table-row">
                 <td class="px-5 py-4">
                   <div class="flex items-center gap-3">
                     <app-student-avatar [student]="student" />
@@ -209,24 +209,22 @@
                 </td>
                 <td class="px-4 py-4">
                   <span
-                    class="inline-flex rounded-full px-2.5 py-1 text-xs font-bold"
-                    [class.bg-emerald-100]="student.active"
-                    [class.text-emerald-800]="student.active"
-                    [class.bg-slate-200]="!student.active"
-                    [class.text-slate-700]="!student.active"
+                    class="ui-badge"
+                    [class.ui-badge-success]="student.active"
+                    [class.ui-badge-neutral]="!student.active"
                   >
                     {{ student.active ? 'Ativo' : 'Inativo' }}
                   </span>
                 </td>
                 <td class="px-5 py-4">
                   <div class="flex items-center justify-end gap-1.5">
-                    <button type="button" (click)="openDetails(student)" [disabled]="actionLoadingId() === student.id" class="rounded-lg px-2.5 py-2 text-sm font-bold text-sky-700 hover:bg-sky-100 disabled:opacity-50">Ver</button>
-                    <button type="button" (click)="openEdit(student)" [disabled]="actionLoadingId() === student.id" class="rounded-lg px-2.5 py-2 text-sm font-bold text-slate-700 hover:bg-slate-100 disabled:opacity-50">Editar</button>
+                    <button type="button" (click)="openDetails(student)" [disabled]="actionLoadingId() === student.id" class="ui-button ui-button-quiet min-h-9 px-2.5 py-1.5 text-sky-700">Ver</button>
+                    <button type="button" (click)="openEdit(student)" [disabled]="actionLoadingId() === student.id" class="ui-button ui-button-quiet min-h-9 px-2.5 py-1.5">Editar</button>
                     @if (isAdmin()) {
-                      <button type="button" (click)="requestStatusChange(student)" class="rounded-lg px-2.5 py-2 text-sm font-bold text-amber-700 hover:bg-amber-50">
+                      <button type="button" (click)="requestStatusChange(student)" class="ui-button ui-button-quiet min-h-9 px-2.5 py-1.5 text-amber-700 hover:bg-amber-50">
                         {{ student.active ? 'Inativar' : 'Ativar' }}
                       </button>
-                      <button type="button" (click)="requestDelete(student)" class="rounded-lg px-2.5 py-2 text-sm font-bold text-red-700 hover:bg-red-50">Excluir</button>
+                      <button type="button" (click)="requestDelete(student)" class="ui-button ui-button-quiet min-h-9 px-2.5 py-1.5 text-red-700 hover:bg-red-50">Excluir</button>
                     }
                   </div>
                 </td>
@@ -248,11 +246,9 @@
                     <p class="mt-1 text-sm font-medium text-slate-600">{{ student.cpf | cpf }}</p>
                   </div>
                   <span
-                    class="shrink-0 rounded-full px-2.5 py-1 text-xs font-bold"
-                    [class.bg-emerald-100]="student.active"
-                    [class.text-emerald-800]="student.active"
-                    [class.bg-slate-200]="!student.active"
-                    [class.text-slate-700]="!student.active"
+                    class="ui-badge shrink-0"
+                    [class.ui-badge-success]="student.active"
+                    [class.ui-badge-neutral]="!student.active"
                   >
                     {{ student.active ? 'Ativo' : 'Inativo' }}
                   </span>
@@ -262,8 +258,8 @@
               </div>
             </div>
             <div class="mt-4 grid grid-cols-2 gap-2 sm:flex">
-              <button type="button" (click)="openDetails(student)" [disabled]="actionLoadingId() === student.id" class="min-h-10 rounded-xl bg-sky-50 px-3 text-sm font-bold text-sky-800 disabled:opacity-50">Visualizar</button>
-              <button type="button" (click)="openEdit(student)" [disabled]="actionLoadingId() === student.id" class="min-h-10 rounded-xl bg-slate-100 px-3 text-sm font-bold text-slate-700 disabled:opacity-50">Editar</button>
+              <button type="button" (click)="openDetails(student)" [disabled]="actionLoadingId() === student.id" class="ui-button min-h-10 bg-sky-50 px-3 text-sky-800">Visualizar</button>
+              <button type="button" (click)="openEdit(student)" [disabled]="actionLoadingId() === student.id" class="ui-button min-h-10 bg-slate-100 px-3 text-slate-700">Editar</button>
               @if (isAdmin()) {
                 <button type="button" (click)="requestStatusChange(student)" class="min-h-10 rounded-xl bg-amber-50 px-3 text-sm font-bold text-amber-800">{{ student.active ? 'Inativar' : 'Ativar' }}</button>
                 <button type="button" (click)="requestDelete(student)" class="min-h-10 rounded-xl bg-red-50 px-3 text-sm font-bold text-red-700">Excluir</button>
@@ -279,11 +275,11 @@
           <strong>{{ pageData()?.totalElements }}</strong> alunos
         </p>
         <div class="flex items-center justify-between gap-2 sm:justify-end">
-          <button type="button" (click)="changePage(0)" [disabled]="page() === 0" class="grid size-10 place-items-center rounded-xl border border-slate-300 bg-white font-bold text-slate-600 disabled:cursor-not-allowed disabled:opacity-40" aria-label="Primeira página">«</button>
-          <button type="button" (click)="changePage(page() - 1)" [disabled]="page() === 0" class="grid size-10 place-items-center rounded-xl border border-slate-300 bg-white font-bold text-slate-600 disabled:cursor-not-allowed disabled:opacity-40" aria-label="Página anterior">‹</button>
+          <button type="button" (click)="changePage(0)" [disabled]="page() === 0" class="ui-icon-button border border-slate-300 bg-white font-bold" aria-label="Primeira página">«</button>
+          <button type="button" (click)="changePage(page() - 1)" [disabled]="page() === 0" class="ui-icon-button border border-slate-300 bg-white font-bold" aria-label="Página anterior">‹</button>
           <span class="min-w-24 text-center text-sm font-bold text-slate-700">Página {{ page() + 1 }} de {{ pageData()?.totalPages }}</span>
-          <button type="button" (click)="changePage(page() + 1)" [disabled]="page() + 1 >= (pageData()?.totalPages || 0)" class="grid size-10 place-items-center rounded-xl border border-slate-300 bg-white font-bold text-slate-600 disabled:cursor-not-allowed disabled:opacity-40" aria-label="Próxima página">›</button>
-          <button type="button" (click)="changePage((pageData()?.totalPages || 1) - 1)" [disabled]="page() + 1 >= (pageData()?.totalPages || 0)" class="grid size-10 place-items-center rounded-xl border border-slate-300 bg-white font-bold text-slate-600 disabled:cursor-not-allowed disabled:opacity-40" aria-label="Última página">»</button>
+          <button type="button" (click)="changePage(page() + 1)" [disabled]="page() + 1 >= (pageData()?.totalPages || 0)" class="ui-icon-button border border-slate-300 bg-white font-bold" aria-label="Próxima página">›</button>
+          <button type="button" (click)="changePage((pageData()?.totalPages || 1) - 1)" [disabled]="page() + 1 >= (pageData()?.totalPages || 0)" class="ui-icon-button border border-slate-300 bg-white font-bold" aria-label="Última página">»</button>
         </div>
       </footer>
     }

@@ -48,6 +48,16 @@ export const routes: Routes = [
         title: 'Alunos | Talentos do Capão',
       },
       {
+        path: 'classes',
+        canActivate: [roleGuard],
+        data: { roles: ['ADMIN', 'CHEFE', 'FUNCIONARIO', 'OPERADOR'] },
+        loadComponent: () =>
+          import('./features/classes/classes.page').then(
+            (component) => component.ClassesPage,
+          ),
+        title: 'Turmas | Talentos do Capão',
+      },
+      {
         path: 'forbidden',
         loadComponent: () =>
           import('./features/errors/forbidden.page').then(

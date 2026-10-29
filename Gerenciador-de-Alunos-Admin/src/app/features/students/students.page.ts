@@ -6,6 +6,7 @@ import { Observable, Subscription } from 'rxjs';
 import { AuthService } from '../../core/auth/auth.service';
 import { ToastService } from '../../core/services/toast.service';
 import { ConfirmationDialogComponent } from '../../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { PageHeaderComponent } from '../../shared/components/page-header/page-header.component';
 import { ToastComponent } from '../../shared/components/toast/toast.component';
 import { ApiError } from '../../shared/models/api-error.model';
 import { StudentAvatarComponent } from './components/student-avatar/student-avatar.component';
@@ -40,6 +41,7 @@ interface PendingAction {
     StudentFormComponent,
     StudentDetailsComponent,
     ConfirmationDialogComponent,
+    PageHeaderComponent,
     ToastComponent,
   ],
   templateUrl: './students.page.html',

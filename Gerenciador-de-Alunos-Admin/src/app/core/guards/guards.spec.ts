@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRouteSnapshot, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { routes } from '../../app.routes';
 import { AuthService } from '../auth/auth.service';
+import { navigationItems } from '../auth/navigation.config';
 import { authGuard } from './auth.guard';
 import { roleGuard } from './role.guard';
 
@@ -61,5 +63,16 @@ describe('route guards', () => {
     TestBed.runInInjectionContext(() => roleGuard(route, {} as RouterStateSnapshot));
 
     expect(router.parseUrl).toHaveBeenCalledWith('/forbidden');
+  });
+
+  it('keeps the classes route and navigation entry available to ADMIN', () => {
+    const shellRoute = routes.find((route) => route.path === '');
+    const classesRoute = shellRoute?.children?.find((route) => route.path === 'classes');
+    const classesNavigation = navigationItems.find((item) => item.route === '/classes');
+
+    expect(classesRoute?.canActivate).toContain(roleGuard);
+    expect(classesRoute?.data?.['roles']).toContain('ADMIN');
+    expect(classesNavigation?.implemented).toBeTrue();
+    expect(classesNavigation?.roles).toEqual(classesRoute?.data?.['roles']);
   });
 });

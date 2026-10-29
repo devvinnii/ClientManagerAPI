@@ -1,0 +1,78 @@
+<div class="fixed inset-0 z-[60] flex items-end justify-center sm:items-center sm:p-4" role="presentation">
+  <button type="button" class="ui-modal-backdrop" aria-label="Fechar formulário" (click)="!saving && closed.emit()"></button>
+  <section class="ui-modal-panel max-h-[95dvh] w-full overflow-y-auto rounded-t-3xl sm:max-w-3xl sm:rounded-3xl" role="dialog" aria-modal="true" aria-labelledby="class-form-title">
+    <header class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white/95 px-5 py-4 backdrop-blur sm:px-7">
+      <div>
+        <p class="text-xs font-bold uppercase tracking-[0.16em] text-sky-700">Gestão de turmas</p>
+        <h2 id="class-form-title" class="mt-1 text-xl font-black text-slate-900">{{ classGroup ? 'Editar turma' : 'Cadastrar turma' }}</h2>
+      </div>
+      <button type="button" (click)="closed.emit()" [disabled]="saving" class="ui-icon-button text-2xl" aria-label="Fechar">×</button>
+    </header>
+
+    <form [formGroup]="form" (ngSubmit)="submit()" class="p-5 sm:p-7" novalidate>
+      @if (apiMessage) { <div class="mb-5 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800" role="alert">{{ apiMessage }}</div> }
+      <section aria-labelledby="class-general-data-title">
+        <div class="mb-5"><h3 id="class-general-data-title" class="font-black text-slate-950">Informações da turma</h3><p class="mt-1 text-sm text-slate-500">Defina a identificação, modalidade e capacidade.</p></div>
+      <div class="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label for="class-name" class="ui-label">Nome *</label>
+          <input id="class-name" formControlName="name" class="ui-input" placeholder="Ex.: Natação infantil A" [attr.aria-invalid]="!!fieldError('name')" />
+          @if (fieldError('name'); as error) { <p class="mt-1.5 text-sm text-red-700">{{ error }}</p> }
+        </div>
+        <div>
+          <label for="class-modality" class="ui-label">Modalidade *</label>
+          <select id="class-modality" formControlName="modality" class="ui-select">
+            @for (modality of modalities; track modality.value) { <option [value]="modality.value">{{ modality.label }}</option> }
+          </select>
+        </div>
+        <div>
+          <label for="class-responsible" class="ui-label">Professor ou responsável *</label>
+          <input id="class-responsible" formControlName="responsible" class="ui-input" placeholder="Nome do responsável" [attr.aria-invalid]="!!fieldError('responsible')" />
+          @if (fieldError('responsible'); as error) { <p class="mt-1.5 text-sm text-red-700">{{ error }}</p> }
+        </div>
+        <div>
+          <label for="class-capacity" class="ui-label">Capacidade máxima *</label>
+          <input id="class-capacity" type="number" min="1" formControlName="maxCapacity" class="ui-input" [attr.aria-invalid]="!!fieldError('maxCapacity')" />
+          @if (fieldError('maxCapacity'); as error) { <p class="mt-1.5 text-sm text-red-700">{{ error }}</p> }
+        </div>
+        <div class="sm:col-span-2">
+          <label for="class-description" class="ui-label">Descrição</label>
+          <textarea id="class-description" rows="3" formControlName="description" class="ui-textarea" placeholder="Informações adicionais sobre a turma"></textarea>
+        </div>
+        @if (classGroup) {
+          <label class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/70 p-4 sm:col-span-2">
+            <input type="checkbox" formControlName="active" class="size-5 accent-sky-700" />
+            <span><strong class="block text-sm text-slate-800">Turma ativa</strong><span class="text-xs text-slate-500">Turmas inativas não aceitam novas matrículas.</span></span>
+          </label>
+        }
+      </div>
+      </section>
+
+      <fieldset class="mt-7 border-t border-slate-200 pt-6" formArrayName="schedules">
+        <legend class="sr-only">Dias e horários</legend>
+        <div class="flex items-center justify-between gap-3">
+          <div><h3 class="font-black text-slate-950">Dias e horários</h3><p class="mt-1 text-sm text-slate-500">Adicione pelo menos um encontro semanal.</p></div>
+          <button type="button" (click)="addSchedule()" class="ui-button bg-sky-50 min-h-10 px-3 py-2 text-sky-800">＋ Adicionar horário</button>
+        </div>
+        <div class="mt-4 space-y-3">
+          @for (schedule of schedules.controls; track $index) {
+            <div class="grid gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 p-4 sm:grid-cols-[1.4fr_1fr_1fr_auto] sm:items-end" [formGroupName]="$index">
+              <div><label [for]="'schedule-day-' + $index" class="ui-label">Dia da semana</label><select [id]="'schedule-day-' + $index" formControlName="dayOfWeek" class="ui-select">
+                @for (day of weekdays; track day.value) { <option [value]="day.value">{{ day.label }}</option> }
+              </select></div>
+              <div><label [for]="'schedule-start-' + $index" class="ui-label">Início</label><input [id]="'schedule-start-' + $index" type="time" formControlName="startTime" class="ui-input" /></div>
+              <div><label [for]="'schedule-end-' + $index" class="ui-label">Término</label><input [id]="'schedule-end-' + $index" type="time" formControlName="endTime" class="ui-input" /></div>
+              <button type="button" (click)="removeSchedule($index)" [disabled]="schedules.length === 1" class="ui-button ui-button-danger min-h-11 px-3">Remover</button>
+            </div>
+          }
+        </div>
+        @if (hasInvalidTime()) { <p class="mt-2 text-sm text-red-700">O horário final deve ser posterior ao inicial.</p> }
+      </fieldset>
+
+      <div class="mt-7 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
+        <button type="button" (click)="closed.emit()" [disabled]="saving" class="ui-button ui-button-secondary">Cancelar</button>
+        <button type="submit" [disabled]="saving" class="ui-button ui-button-primary px-6">@if (saving) { <span class="size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" aria-hidden="true"></span> } {{ saving ? 'Salvando...' : classGroup ? 'Salvar alterações' : 'Cadastrar turma' }}</button>
+      </div>
+    </form>
+  </section>
+</div>

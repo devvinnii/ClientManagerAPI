@@ -51,7 +51,7 @@
             formControlName="username"
             autocomplete="username"
             placeholder="Digite seu usuário"
-            class="min-h-12 w-full rounded-xl border border-slate-300 bg-white px-4 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-sky-600 focus:ring-4 focus:ring-sky-100"
+            class="ui-input min-h-12"
             [attr.aria-invalid]="form.controls.username.invalid && form.controls.username.touched"
           />
           @if (form.controls.username.invalid && form.controls.username.touched) {
@@ -68,7 +68,7 @@
               formControlName="password"
               autocomplete="current-password"
               placeholder="Digite sua senha"
-              class="min-h-12 w-full rounded-xl border border-slate-300 bg-white px-4 pr-20 text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-sky-600 focus:ring-4 focus:ring-sky-100"
+              class="ui-input min-h-12 pr-20"
               [attr.aria-invalid]="form.controls.password.invalid && form.controls.password.touched"
             />
             <button
@@ -88,7 +88,7 @@
         <button
           type="submit"
           [disabled]="loading()"
-          class="flex min-h-12 w-full items-center justify-center rounded-xl bg-sky-700 px-5 font-bold text-white shadow-lg shadow-sky-700/20 transition hover:bg-sky-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-700 disabled:cursor-not-allowed disabled:opacity-60"
+          class="ui-button ui-button-primary min-h-12 w-full"
         >
           @if (loading()) {
             <span class="mr-2 size-4 animate-spin rounded-full border-2 border-white/30 border-t-white" aria-hidden="true"></span>
